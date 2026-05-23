@@ -115,8 +115,10 @@ ansible-playbook snmpv3.yml -f 2
 
 ```bash
 # Desde el manager: consulta SNMPv3 completa
+# NOTA: en Docker snmpd escucha en el puerto 1161 (no 161)
+# En un entorno real con Vagrant el puerto sería 161
 snmpget -v 3 -u vagrant -l authPriv -a SHA -A vagrant1234 \
-        -x AES -X vagrant1234 10.0.125.3 SNMPv2-MIB::sysUpTime.0
+        -x AES -X vagrant1234 10.0.125.3:1161 SNMPv2-MIB::sysUpTime.0
 
 # Desde host1/host2: ver la configuración copiada
 docker exec -it host1 bash
@@ -127,12 +129,13 @@ sudo tail /var/log/syslog
 ### Configurar parámetros por defecto (paso 4)
 
 ```bash
-docker exec -it manager bash
+docker exec -it -u vagrant manager bash
 mkdir -p ~/.snmp
 nano ~/.snmp/snmp.conf   # completar los TODO
 
 # Una vez configurado, la consulta se simplifica a:
-snmpget 10.0.125.3 SNMPv2-MIB::sysUpTime.0
+# (el puerto :1161 sigue siendo necesario en Docker)
+snmpget 10.0.125.3:1161 SNMPv2-MIB::sysUpTime.0
 ```
 
 ---
