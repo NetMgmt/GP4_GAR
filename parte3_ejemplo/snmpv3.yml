@@ -1,0 +1,43 @@
+---
+# snmpv3.yml — Playbook Ansible para configurar SNMPv3 en host1 y host2
+# Práctica GP4 - Parte 3
+#
+# NOTA PARA EL ALUMNO:
+#   Este fichero define las tareas (tasks) que Ansible ejecutará en remoto.
+#   Está incompleto: debes rellenar las secciones marcadas con TODO.
+#
+#   Para ejecutarlo:
+#     ansible-playbook snmpv3.yml -f 2
+#
+#   Documentación playbooks:
+#     https://docs.ansible.com/ansible/latest/user_guide/playbooks.html
+
+- name: Configurar agente SNMPv3 en hosts gestionados
+  hosts: servers        # grupo definido en /etc/ansible/hosts
+  become: yes           # ejecutar tareas como root (sudo)
+
+  tasks:
+
+    # ── Tarea 1: Instalar el paquete snmpd ──────────────────────────────────
+    - name: Instalar snmpd
+      apt:
+        name: snmpd
+        state: present
+        update_cache: yes
+
+    # ── Tarea 2: Copiar fichero de configuración SNMPv3 ─────────────────────
+    # TODO: completa el módulo "copy" para copiar snmpd.conf al destino correcto
+    - name: Copiar snmpd.conf a los hosts
+      copy:
+        src: # TODO: ruta del fichero fuente en manager (p.ej. /home/vagrant/snmpd.conf)
+        dest: # TODO: ruta de destino en host1/host2 (p.ej. /etc/snmp/snmpd.conf)
+        owner: root
+        group: root
+        mode: '0644'
+
+    # ── Tarea 3: Reiniciar el servicio snmpd ────────────────────────────────
+    # TODO: usa el módulo "service" para reiniciar snmpd
+    - name: Reiniciar el servicio snmpd
+      service:
+        name: # TODO: nombre del servicio
+        state: # TODO: estado deseado tras reinicio

@@ -1,0 +1,67 @@
+version: "3.8"
+
+# ================================================================
+#  GP4 — Gestión de configuración mediante Ansible
+#  Escenario Docker para la práctica de laboratorio
+#
+#  Topología:
+#    manager (10.0.125.2)  ──SSH/Ansible──►  host1 (10.0.125.3)
+#                          ──SSH/Ansible──►  host2 (10.0.125.4)
+#
+#  Uso:
+#    Arrancar el escenario:    docker compose up -d --build
+#    Conectarse al manager:    docker exec -it -u vagrant manager bash
+#    Conectarse a host1:       docker exec -it host1 bash
+#    Conectarse a host2:       docker exec -it host2 bash
+#    Ver logs de arranque:     docker compose logs -f manager
+#    Parar el escenario:       docker compose down
+# ================================================================
+
+services:
+
+  host1:
+    build:
+      context: ./host1
+    container_name: host1
+    hostname: host1
+    networks:
+      ansible_net:
+        ipv4_address: 10.0.125.3
+    # NET_BIND_SERVICE permite a snmpd escuchar en el puerto 161 (privilegiado)
+    cap_add:
+      - NET_BIND_SERVICE
+    restart: unless-stopped
+
+  host2:
+    build:
+      context: ./host2
+    container_name: host2
+    hostname: host2
+    networks:
+      ansible_net:
+        ipv4_address: 10.0.125.4
+    cap_add:
+      - NET_BIND_SERVICE
+    restart: unless-stopped
+
+  manager:
+    build:
+      context: ./manager
+    container_name: manager
+    hostname: manager
+    networks:
+      ansible_net:
+        ipv4_address: 10.0.125.2
+    user: root
+    depends_on:
+      - host1
+      - host2
+    restart: unless-stopped
+
+networks:
+  ansible_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.125.0/24
+          gateway: 10.0.125.1

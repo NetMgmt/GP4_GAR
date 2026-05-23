@@ -1,0 +1,14 @@
+# /etc/ansible/hosts — Inventario de Ansible
+# Práctica GP4 - Gestión de configuración mediante Ansible
+#
+# NOTA PARA EL ALUMNO:
+#   Este fichero define los hosts que Ansible gestionará.
+#   Ya encontrarás aquí el grupo [servers] con host1 y host2.
+#   Puedes añadir más grupos o hosts si lo necesitas.
+#
+#   Documentación:
+#     https://docs.ansible.com/ansible/latest/inventory_guide/intro_inventory.html
+
+[servers]
+10.0.125.3
+10.0.125.4
